@@ -1,9 +1,10 @@
 import java.util.Scanner;
+import java.util.function.BiPredicate;
 
 public class Main {
 
     //sample array
-    public static int[] array = {0,1,5,10,15,23,60,62,61,29,25,14,13,12,11,10,9,7,6,4,3,2,1};
+    public static int[] array = {0,1,5,10,15,23,60,59,58,29,25,14,13,12,11,10,9,7,6,4,3,2,1};
 
     public static void main(String[] args) {
         
@@ -16,8 +17,11 @@ public class Main {
         Scanner sc = new Scanner(System.in);
         int number = sc.nextInt();
 
+        BiPredicate<Integer,Integer> AscendingSearch = (a , b) -> a > b;
+        BiPredicate<Integer,Integer> DescendingSearch = (a , b) -> a < b;
+
         // second log & third log : binary search on the first half and second half
-        if( binarySearchAss(0,topIndex,number) || binarySearchDes(topIndex + 1,array.length - 1, number) ){
+        if( binarySearch(0,topIndex,number , AscendingSearch) || binarySearch(topIndex + 1,array.length - 1, number,DescendingSearch) ){
             System.out.println("the given number is in the array :)");
             return;
         }
@@ -33,11 +37,11 @@ public class Main {
 
         int distance = lastIndex - firstIndex;
 
-        if(distance == 1)
-            return array[firstIndex] > array[lastIndex] ? firstIndex : lastIndex;
+        if(distance == 0)
+            return firstIndex;
 
         else if(array[firstIndex + distance/2] > array[ firstIndex + distance/2 + 1])
-            return findTop(firstIndex , lastIndex - distance/2);
+            return findTop(firstIndex , firstIndex + distance/2);
 
         else
             return findTop( firstIndex + (distance/2 + 1) , lastIndex);
@@ -45,31 +49,16 @@ public class Main {
     }
 
 
-    //FIX THIS MESS
-    //please make me
-    public static boolean binarySearchAss(int firstIndex,int lastIndex ,int num){
+    public static boolean binarySearch(int firstIndex,int lastIndex ,int num , BiPredicate<Integer,Integer> searchMethod) {
 
         int distance = lastIndex - firstIndex;
 
-        if(distance == 0)
+        if (distance == 0)
             return num == array[lastIndex];
-        else if( (num > array[firstIndex + distance/2]))
-            return binarySearchAss(firstIndex + distance/2 + 1 , lastIndex, num);
+        else if (searchMethod.test( num , array[firstIndex + distance / 2] ))
+            return binarySearch(firstIndex + distance / 2 + 1, lastIndex, num, searchMethod);
         else
-            return binarySearchAss(firstIndex , firstIndex + distance/2 , num);
-
-    }
-    public  static boolean binarySearchDes(int firstIndex,int lastIndex , int num){
-
-        int distance = lastIndex - firstIndex;
-
-        if(distance == 0)
-            return num == array[lastIndex];
-        else if( (num >= array[firstIndex + distance/2]))
-            return binarySearchAss(firstIndex , firstIndex + distance/2 , num);
-        else
-            return binarySearchAss(firstIndex + distance/2 + 1 , lastIndex, num);
-
+            return binarySearch(firstIndex, firstIndex + distance / 2, num, searchMethod);
 
     }
 
