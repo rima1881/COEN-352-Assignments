@@ -13,8 +13,6 @@ import java.util.NoSuchElementException;
 
 
 public class CustomArray<E> implements Iterable<E> {
-
-
     //constructors
     @SuppressWarnings("unchecked")
     public CustomArray(int size){
@@ -56,6 +54,10 @@ public class CustomArray<E> implements Iterable<E> {
 
         data[rightPointer] = element;
         rightPointer--;
+    }
+
+    public E getIndex(int index){
+        return data[index];
     }
 
     public int getSize(){
